@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -81,7 +81,7 @@ function App() {
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="min-h-screen">
         <Navbar toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
         <main className="container mx-auto py-8">
@@ -99,7 +99,7 @@ function App() {
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
