@@ -6,69 +6,85 @@
 
 @layer base {
   body {
-    background-color: #0a0a0f;
-    color: #f3f4f6;
+    background-color: #f8fafc; /* Elegant Light Slate */
+    color: #0f172a; /* Slate 900 */
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     @apply antialiased min-h-screen overflow-x-hidden transition-all duration-300;
     
-    /* Cyberpunk backdrop grid + glowing clusters */
+    /* Clean Light Grid */
     background-image: 
-      linear-gradient(rgba(18, 18, 28, 0.45) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(18, 18, 28, 0.45) 1px, transparent 1px),
-      radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.12), transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.12), transparent 40%);
-    background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
+      linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
     background-attachment: fixed;
+  }
+
+  /* Dark mode overrides */
+  .dark body {
+    background-color: #080d16; /* Clean Space Blue/Slate */
+    color: #f1f5f9; /* Slate 100 */
+    
+    /* Subtle Dark Grid */
+    background-image: 
+      linear-gradient(rgba(30, 41, 59, 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30, 41, 59, 0.4) 1px, transparent 1px);
+    background-size: 30px 30px;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', sans-serif;
-    @apply tracking-tight;
+    @apply tracking-tight font-semibold;
   }
 }
 
 @layer utilities {
-  /* Premium Glassmorphism Cards & Panels */
+  /* Premium Glassmorphism Cards & Panels (Light/Dark Responsive) */
   .glass {
-    background: rgba(17, 24, 39, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+  }
+
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.65);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
   }
 
   .glass-card {
-    @apply glass rounded-2xl p-6 transition-all duration-300 hover:border-white/10;
+    @apply glass rounded-2xl p-6 transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-800;
   }
 
-  /* Animated Neon Glow Border Cards */
+  /* Sleek Minimalist Border Outlines */
   .border-glow-blue {
-    border-color: rgba(59, 130, 246, 0.3);
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+    @apply border-blue-500/20 dark:border-blue-500/30;
+    box-shadow: 0 4px 20px -5px rgba(37, 99, 235, 0.08);
   }
 
   .border-glow-purple {
-    border-color: rgba(168, 85, 247, 0.3);
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
+    @apply border-slate-300 dark:border-slate-800;
+    box-shadow: 0 4px 20px -5px rgba(100, 116, 139, 0.08);
   }
 
   .border-glow-green {
-    border-color: rgba(16, 185, 129, 0.3);
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+    @apply border-teal-500/20 dark:border-teal-500/30;
+    box-shadow: 0 4px 20px -5px rgba(13, 148, 136, 0.08);
   }
 
-  /* Text Gradients */
+  /* Classy clean text gradients */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-teal-600 to-indigo-600 dark:from-blue-400 dark:via-teal-400 dark:to-indigo-400;
   }
 
   .text-gradient-purple {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary to-pink-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400;
   }
 
-  /* Glow Hover Triggers */
+  /* Smooth interactions */
   .glow-hover {
-    @apply transition-all duration-300 hover:scale-[1.01] hover:brightness-110;
+    @apply transition-all duration-300 hover:translate-y-[-1px] hover:shadow-lg;
   }
 
   /* Modern custom scrollbar */
@@ -77,13 +93,16 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #0a0a0f;
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.3);
+    background: rgba(148, 163, 184, 0.3);
     border-radius: 99px;
   }
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(51, 65, 85, 0.4);
+  }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(168, 85, 247, 0.5);
+    background: rgba(148, 163, 184, 0.5);
   }
 }

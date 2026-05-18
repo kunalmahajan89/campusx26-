@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,19 +8,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0a0a0f',
-        surface: '#111827',
-        primary: '#3b82f6',     // Accent Blue
-        secondary: '#a855f7',   // Neon Purple
-        accent: '#10b981',      // Neon Green
+        background: '#090d16',
+        surface: '#0f172a',
+        primary: '#2563eb',     // Elegant Engineering Tech Blue
+        secondary: '#64748b',   // Classy Slate Gray
+        accent: '#0d9488',      // Professional Teal
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
       },
       boxShadow: {
-        'glow-blue': '0 0 15px rgba(59, 130, 246, 0.4)',
-        'glow-purple': '0 0 15px rgba(168, 85, 247, 0.4)',
-        'glow-green': '0 0 15px rgba(16, 185, 129, 0.4)',
+        'glow-blue': '0 0 10px rgba(37, 99, 235, 0.15)',
+        'glow-slate': '0 0 10px rgba(100, 116, 139, 0.15)',
+        'glow-teal': '0 0 10px rgba(13, 148, 136, 0.15)',
       }
     },
   },

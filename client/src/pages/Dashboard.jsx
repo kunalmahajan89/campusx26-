@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import { mockActivities } from '../mock/activities';
 import { api, checkServerHealth } from '../api';
 import { 
@@ -20,10 +21,9 @@ import {
   TrendingUp, 
   Terminal,
   Activity,
-  FileText,
-  HelpCircle,
   Briefcase,
-  Megaphone
+  Megaphone,
+  HelpCircle
 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -32,6 +32,7 @@ import { toast } from 'sonner';
 
 export default function Dashboard() {
   const { user } = useAuthStore();
+  const { theme } = useThemeStore();
   const [activeTab, setActiveTab] = useState('announcement');
 
   // FORM STATES FOR ANNOUNCEMENT
@@ -69,9 +70,9 @@ export default function Dashboard() {
 
   const badgeMap = {
     "Alpha Coder": { color: "from-blue-500 to-indigo-500", desc: "Maintained active 7+ day coding streak" },
-    "Quiz Master": { color: "from-purple-500 to-pink-500", desc: "Aced 100% correct in MCQ Decryption" },
-    "Team Lead": { color: "from-emerald-500 to-teal-500", desc: "Mentored 3 junior project profiles" },
-    "Rookie": { color: "from-slate-600 to-slate-400", desc: "Successfully registered and instantiated node" }
+    "Quiz Master": { color: "from-teal-500 to-emerald-500", desc: "Aced 100% correct in MCQ Decryption" },
+    "Team Lead": { color: "from-slate-500 to-slate-700", desc: "Mentored 3 junior project profiles" },
+    "Rookie": { color: "from-slate-400 to-slate-500", desc: "Successfully registered and instantiated node" }
   };
 
   // BROADCAST ANNOUNCEMENT TO DATABASE
@@ -173,20 +174,20 @@ export default function Dashboard() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8 select-none"
+      className="space-y-8 select-none transition-all duration-300"
     >
       {/* HEADER WELCOME ROW */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white flex items-center gap-2">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
             System Dashboard
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Welcome back, {user?.name}. {isEducator ? 'Educator telemetry node instanced.' : 'Simulated kernel logs fully synchronized.'}
           </p>
         </div>
         
-        <div className="flex items-center gap-2 bg-slate-950/40 border border-white/5 px-4 py-2 rounded-xl text-xs font-mono text-slate-300">
+        <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-950/40 border border-slate-200 dark:border-white/5 px-4 py-2 rounded-xl text-xs font-mono text-slate-600 dark:text-slate-300">
           <Terminal className="h-4 w-4 text-primary" />
           <span>CONNECTED: campusx_{user?.role}_node_26</span>
         </div>
@@ -194,34 +195,34 @@ export default function Dashboard() {
 
       {/* STATS HIGHLIGHT GRID */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card glow="blue" className="p-5 flex flex-col justify-between h-28">
-          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">GLOBAL RANK</span>
+        <Card className="p-5 flex flex-col justify-between h-28 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+          <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">GLOBAL RANK</span>
           <div className="flex items-end justify-between">
-            <span className="text-3xl font-extrabold text-white">#{user?.rank || 12}</span>
-            <Trophy className="h-6 w-6 text-primary shadow-glow-blue" />
+            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">#{user?.rank || 12}</span>
+            <Trophy className="h-6 w-6 text-primary" />
           </div>
         </Card>
 
-        <Card glow="green" className="p-5 flex flex-col justify-between h-28">
-          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">ACTIVE STREAK</span>
+        <Card className="p-5 flex flex-col justify-between h-28 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+          <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">ACTIVE STREAK</span>
           <div className="flex items-end justify-between">
-            <span className="text-3xl font-extrabold text-white">{user?.streak || 1} DAYS</span>
-            <Flame className="h-6 w-6 text-accent fill-accent shadow-glow-green" />
+            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{user?.streak || 1} DAYS</span>
+            <Flame className="h-6 w-6 text-accent fill-accent" />
           </div>
         </Card>
 
-        <Card glow="purple" className="p-5 flex flex-col justify-between h-28">
-          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">TOTAL SCORE</span>
+        <Card className="p-5 flex flex-col justify-between h-28 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+          <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">TOTAL SCORE</span>
           <div className="flex items-end justify-between">
-            <span className="text-3xl font-extrabold text-white">{user?.xp || 0} XP</span>
-            <Zap className="h-6 w-6 text-secondary fill-secondary shadow-glow-purple" />
+            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{user?.xp || 0} XP</span>
+            <Zap className="h-6 w-6 text-blue-500 fill-blue-500" />
           </div>
         </Card>
 
-        <Card className="p-5 flex flex-col justify-between h-28">
-          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">ACHIEVEMENTS</span>
+        <Card className="p-5 flex flex-col justify-between h-28 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+          <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">ACHIEVEMENTS</span>
           <div className="flex items-end justify-between">
-            <span className="text-3xl font-extrabold text-white">{user?.badges?.length || 0} BADGES</span>
+            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{user?.badges?.length || 0} BADGES</span>
             <Award className="h-6 w-6 text-slate-400" />
           </div>
         </Card>
@@ -229,16 +230,16 @@ export default function Dashboard() {
 
       {/* EDUCATOR WORKSPACE PANEL OR CHART GALLERY */}
       {isEducator ? (
-        <Card className="glass relative overflow-hidden p-6">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
+        <Card className="glass relative overflow-hidden p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
           
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2 mb-6">
+          <h3 className="text-lg font-extrabold text-slate-800 dark:text-white flex items-center gap-2 mb-6">
             <Terminal className="h-5 w-5 text-primary" />
             Educator Administrative Terminal
           </h3>
 
           {/* WORKSPACE TAB SWITCHER */}
-          <div className="flex gap-2 border-b border-white/5 pb-4 mb-6">
+          <div className="flex gap-2 border-b border-slate-200 dark:border-white/5 pb-4 mb-6">
             <Button 
               variant={activeTab === 'announcement' ? 'primary' : 'secondary'}
               onClick={() => setActiveTab('announcement')}
@@ -275,11 +276,11 @@ export default function Dashboard() {
                   onChange={(e) => setAnnouncementTitle(e.target.value)}
                 />
                 <div>
-                  <label className="block text-xs font-mono font-bold text-slate-400 mb-2 uppercase tracking-wider">Notice Category Type</label>
+                  <label className="block text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Notice Category Type</label>
                   <select 
                     value={announcementType}
                     onChange={(e) => setAnnouncementType(e.target.value)}
-                    className="w-full bg-slate-950/60 border border-white/15 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
+                    className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/15 rounded-xl px-4 py-3 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
                   >
                     <option value="notice">Routine Announcement</option>
                     <option value="event">Official College Event</option>
@@ -288,13 +289,13 @@ export default function Dashboard() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-mono font-bold text-slate-400 mb-2 uppercase tracking-wider font-mono">Notice details content</label>
+                <label className="block text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Notice details content</label>
                 <textarea 
                   placeholder="Provide complete description and telemetry links for the announcement..."
                   value={announcementContent}
                   onChange={(e) => setAnnouncementContent(e.target.value)}
                   rows={3}
-                  className="w-full bg-slate-950/60 border border-white/15 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/15 rounded-xl p-4 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
               <Button type="submit" className="font-extrabold text-xs">Transmit Notice Packet</Button>
@@ -331,11 +332,11 @@ export default function Dashboard() {
                 <Input label="Option D" placeholder="Port 3000" value={quizOptionD} onChange={(e) => setQuizOptionD(e.target.value)} />
               </div>
               <div>
-                <label className="block text-xs font-mono font-bold text-slate-400 mb-2 uppercase tracking-wider font-mono">Specify correct answer index</label>
+                <label className="block text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Specify correct answer index</label>
                 <select 
                   value={quizCorrectIndex}
                   onChange={(e) => setQuizCorrectIndex(e.target.value)}
-                  className="w-full bg-slate-950/60 border border-white/15 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/15 rounded-xl px-4 py-3 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary/50 transition-colors"
                 >
                   <option value="0">Option A is Correct</option>
                   <option value="1">Option B is Correct</option>
@@ -366,11 +367,11 @@ export default function Dashboard() {
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono font-bold text-slate-400 mb-2 uppercase tracking-wider">Opportunity category</label>
+                  <label className="block text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Opportunity category</label>
                   <select 
                     value={opportunityType}
                     onChange={(e) => setOpportunityType(e.target.value)}
-                    className="w-full bg-slate-950/60 border border-white/15 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-primary/50 transition-colors"
+                    className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/15 rounded-xl px-4 py-3 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary/50 transition-colors"
                   >
                     <option value="placement">Full-time Placement</option>
                     <option value="internship">Summer Internship</option>
@@ -386,13 +387,13 @@ export default function Dashboard() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-mono font-bold text-slate-400 mb-2 uppercase tracking-wider">Role description details</label>
+                <label className="block text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Role description details</label>
                 <textarea 
                   placeholder="Describe technical requirements, eligibility criteria, and stack details..."
                   value={opportunityDesc}
                   onChange={(e) => setOpportunityDesc(e.target.value)}
                   rows={2}
-                  className="w-full bg-slate-950/60 border border-white/15 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/15 rounded-xl p-4 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
               <Button type="submit" className="font-extrabold text-xs">Publish Career Opportunity</Button>
@@ -403,15 +404,15 @@ export default function Dashboard() {
         /* STUDENT CHART GROWTH ROW */
         <div className="grid lg:grid-cols-3 gap-8">
           <motion.div className="lg:col-span-2">
-            <Card className="glass h-96 flex flex-col justify-between relative">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-secondary" />
+            <Card className="glass h-96 flex flex-col justify-between relative border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 rounded-2xl">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />
               
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-primary" />
                   XP Growth Progress
                 </h3>
-                <span className="text-[10px] font-mono text-slate-500">WEEKLY METRIC LOG</span>
+                <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">WEEKLY METRIC LOG</span>
               </div>
 
               <div className="flex-1 w-full min-h-[220px]">
@@ -419,47 +420,47 @@ export default function Dashboard() {
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorXp" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} />
-                    <YAxis stroke="#64748b" fontSize={10} tickLine={false} />
+                    <XAxis dataKey="name" stroke={theme === 'dark' ? '#64748b' : '#475569'} fontSize={10} tickLine={false} />
+                    <YAxis stroke={theme === 'dark' ? '#64748b' : '#475569'} fontSize={10} tickLine={false} />
                     <Tooltip 
                       contentStyle={{ 
-                        backgroundColor: 'rgba(17, 24, 39, 0.95)', 
-                        border: '1px solid rgba(255, 255, 255, 0.05)', 
+                        backgroundColor: theme === 'dark' ? 'rgba(15, 23, 42, 0.95)' : '#ffffff', 
+                        border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0', 
                         borderRadius: '12px' 
                       }}
-                      labelStyle={{ color: '#94a3b8', fontSize: '10px', fontFamily: 'monospace' }}
-                      itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
+                      labelStyle={{ color: theme === 'dark' ? '#94a3b8' : '#475569', fontSize: '10px', fontFamily: 'monospace' }}
+                      itemStyle={{ color: theme === 'dark' ? '#f8fafc' : '#0f172a', fontSize: '12px', fontWeight: 'bold' }}
                     />
-                    <Area type="monotone" dataKey="xp" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorXp)" />
+                    <Area type="monotone" dataKey="xp" stroke="#2563eb" strokeWidth={2} fillOpacity={1} fill="url(#colorXp)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card>
           </motion.div>
 
-          <Card className="glass h-96 flex flex-col justify-between">
+          <Card className="glass h-96 flex flex-col justify-between border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 rounded-2xl">
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
-                <Award className="h-5 w-5 text-secondary" />
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-4">
+                <Award className="h-5 w-5 text-blue-500" />
                 Specialist Badges
               </h3>
               
               <div className="grid grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-1">
                 {user?.badges?.map((badgeName) => {
-                  const badgeInfo = badgeMap[badgeName] || { color: "from-slate-600 to-slate-400", desc: "Unlocked via milestones" };
+                  const badgeInfo = badgeMap[badgeName] || { color: "from-slate-450 to-slate-650", desc: "Unlocked via milestones" };
                   return (
                     <div 
                       key={badgeName}
-                      className="bg-slate-950/30 border border-white/5 rounded-xl p-3 flex flex-col items-center text-center gap-2 relative overflow-hidden group hover:border-white/10 transition-colors"
+                      className="bg-slate-50 dark:bg-slate-950/30 border border-slate-200 dark:border-white/5 rounded-xl p-3 flex flex-col items-center text-center gap-2 relative overflow-hidden group hover:border-slate-350 dark:hover:border-white/10 transition-colors"
                     >
-                      <div className={`h-10 w-10 rounded-full bg-gradient-to-tr ${badgeInfo.color} flex items-center justify-center font-bold text-xs text-white shadow-lg`}>
+                      <div className={`h-10 w-10 rounded-full bg-gradient-to-tr ${badgeInfo.color} flex items-center justify-center font-bold text-xs text-white shadow-md`}>
                         {badgeName[0]}
                       </div>
-                      <span className="text-[10px] font-bold text-white truncate w-full">{badgeName}</span>
+                      <span className="text-[10px] font-bold text-slate-800 dark:text-white truncate w-full">{badgeName}</span>
                       
                       <div className="absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                         <span className="text-[9px] text-slate-400 leading-normal">{badgeInfo.desc}</span>
@@ -470,7 +471,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="text-[10px] text-slate-500 font-mono text-center pt-2 border-t border-white/5">
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono text-center pt-2 border-t border-slate-250 dark:border-white/5">
               🚀 ACE TIMED MCQ DECKS TO UNLOCK GOLDEN ACADEMIC BADGES
             </div>
           </Card>
@@ -479,25 +480,25 @@ export default function Dashboard() {
 
       {/* TIMELINE ACTIVITY LOG */}
       <motion.div>
-        <Card className="glass">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-6">
-            <Activity className="h-5 w-5 text-accent animate-pulse" />
+        <Card className="glass border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 rounded-2xl">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-6">
+            <Activity className="h-5 w-5 text-accent" />
             Activity Kernel Logs
           </h3>
 
           <div className="space-y-4">
             {mockActivities.map((act) => (
-              <div key={act.id} className="flex justify-between items-start border-b border-white/5 pb-3 last:border-b-0 last:pb-0">
+              <div key={act.id} className="flex justify-between items-start border-b border-slate-200 dark:border-white/5 pb-3 last:border-b-0 last:pb-0">
                 <div className="flex gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                  <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center shrink-0">
                     <Sparkles className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white leading-none mb-1.5">{act.title}</h4>
-                    <p className="text-xs text-slate-400">{act.detail}</p>
+                    <h4 className="text-sm font-bold text-slate-800 dark:text-white leading-none mb-1.5">{act.title}</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{act.detail}</p>
                   </div>
                 </div>
-                <span className="text-[10px] text-slate-500 font-mono shrink-0">{act.timestamp}</span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono shrink-0">{act.timestamp}</span>
               </div>
             ))}
           </div>
