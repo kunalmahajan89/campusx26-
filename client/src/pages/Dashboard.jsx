@@ -451,7 +451,7 @@ export default function Dashboard() {
               
               <div className="grid grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-1">
                 {user?.badges?.map((badgeName) => {
-                  const badgeInfo = badgeMap[badgeName] || { color: "from-slate-450 to-slate-650", desc: "Unlocked via milestones" };
+                  const badgeInfo = badgeMap[badgeName] || { color: "from-slate-400 to-slate-600", desc: "Unlocked via milestones" };
                   return (
                     <div 
                       key={badgeName}

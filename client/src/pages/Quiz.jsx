@@ -226,7 +226,7 @@ export default function Quiz() {
                         resetQuiz();
                       }
                     }}
-                    className="flex items-center gap-1.5 text-xs font-mono text-slate-450 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-350 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-mono text-slate-500 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-350 transition-colors"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                     ABORT SESSION

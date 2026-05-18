@@ -222,13 +222,13 @@ export default function Landing() {
               className={`p-4 rounded-xl border text-left flex items-center gap-3 transition-all shrink-0 w-full ${
                 activeDemo === 'arena'
                   ? 'border-primary bg-primary/10 text-primary dark:text-white shadow-sm'
-                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 text-slate-600 dark:text-slate-450'
+                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400'
               }`}
             >
               <BookOpen className="h-5 w-5 shrink-0" />
               <div>
                 <span className="block font-bold text-xs">Timed MCQ Decrypter</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">Solve daily Technical MCQ concepts</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Solve daily Technical MCQ concepts</span>
               </div>
             </button>
 
@@ -237,13 +237,13 @@ export default function Landing() {
               className={`p-4 rounded-xl border text-left flex items-center gap-3 transition-all shrink-0 w-full ${
                 activeDemo === 'podium'
                   ? 'border-primary bg-primary/10 text-primary dark:text-white shadow-sm'
-                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 text-slate-600 dark:text-slate-450'
+                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400'
               }`}
             >
               <Trophy className="h-5 w-5 shrink-0" />
               <div>
                 <span className="block font-bold text-xs">Academic Leaderboard</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">Track XP and verify college ranks</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Track XP and verify college ranks</span>
               </div>
             </button>
 
@@ -252,13 +252,13 @@ export default function Landing() {
               className={`p-4 rounded-xl border text-left flex items-center gap-3 transition-all shrink-0 w-full ${
                 activeDemo === 'feed'
                   ? 'border-primary bg-primary/10 text-primary dark:text-white shadow-sm'
-                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 text-slate-600 dark:text-slate-450'
+                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400'
               }`}
             >
               <MessageSquare className="h-5 w-5 shrink-0" />
               <div>
                 <span className="block font-bold text-xs">Community Dev Feed</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">Simulate peer news and updates</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Simulate peer news and updates</span>
               </div>
             </button>
 
@@ -267,13 +267,13 @@ export default function Landing() {
               className={`p-4 rounded-xl border text-left flex items-center gap-3 transition-all shrink-0 w-full ${
                 activeDemo === 'placement'
                   ? 'border-primary bg-primary/10 text-primary dark:text-white shadow-sm'
-                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 text-slate-600 dark:text-slate-450'
+                  : 'bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400'
               }`}
             >
               <Award className="h-5 w-5 shrink-0" />
               <div>
                 <span className="block font-bold text-xs">Placements Registry</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">Browse placements & scholarships</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Browse placements & scholarships</span>
               </div>
             </button>
           </div>
@@ -353,10 +353,10 @@ export default function Landing() {
                   )}
 
                   <div className="flex justify-between items-center pt-2">
-                    <span className="text-[9px] text-slate-400 font-mono">SIMULATION KERNEL V1</span>
+                    <span className="text-[9px] text-slate-500 dark:text-slate-400 font-mono">SIMULATION KERNEL V1</span>
                     <button
                       onClick={() => { setSelectedMCQ(null); setQuizStatus('idle'); }}
-                      className="text-[10px] font-mono text-slate-450 hover:text-primary transition-colors uppercase font-bold"
+                      className="text-[10px] font-mono text-slate-500 dark:text-slate-400 hover:text-primary transition-colors uppercase font-bold"
                     >
                       Reset State
                     </button>
@@ -640,7 +640,7 @@ export default function Landing() {
                   className="w-full flex justify-between items-center p-5 text-left font-bold text-sm text-slate-800 dark:text-white hover:text-primary transition-colors focus:outline-none"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown className={`h-4 w-4 text-slate-450 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 text-slate-500 dark:text-slate-400 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`} />
                 </button>
                 
                 <AnimatePresence initial={false}>

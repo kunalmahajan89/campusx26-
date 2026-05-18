@@ -157,7 +157,7 @@ export default function Chat() {
       <div className="md:col-span-4 flex flex-col h-full space-y-4">
         <Card className="p-4 shrink-0 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-2xl shadow-sm">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-mono font-bold text-slate-600 dark:text-slate-450 uppercase tracking-wider flex items-center gap-2">
+            <h3 className="text-sm font-mono font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
               <MessageSquare className="h-4 w-4 text-primary" />
               Secure Channels
             </h3>
@@ -173,13 +173,13 @@ export default function Chat() {
           </div>
           
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-450" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <input 
               type="text" 
               placeholder="Search peer nodes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-white/10 rounded-xl py-2 pl-9 pr-4 text-xs text-slate-800 dark:text-white placeholder-slate-450 dark:placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-white/10 rounded-xl py-2 pl-9 pr-4 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
         </Card>
@@ -279,7 +279,7 @@ export default function Chat() {
                 placeholder={`Transmit telemetry packets to ${selectedChannel.name}...`}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                className="flex-1 bg-slate-50 dark:bg-slate-950/60 border border-slate-250 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-450 dark:placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
+                className="flex-1 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
               />
               <Button type="submit" variant="primary" className="py-2.5 shrink-0 flex items-center justify-center gap-1.5 font-bold shadow-sm">
                 Send <Send className="h-3.5 w-3.5" />
