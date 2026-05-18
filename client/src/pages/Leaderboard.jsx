@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLeaderboardStore } from '../store/leaderboardStore';
 import { 
@@ -12,8 +12,13 @@ import {
 import Card from '../components/ui/Card';
 
 export default function Leaderboard() {
-  const { leaderboard } = useLeaderboardStore();
+  const { leaderboard, fetchLeaderboard } = useLeaderboardStore();
   const [searchQuery, setSearchQuery] = useState('');
+
+  // DOWNLOAD GLOBAL RANKS ON MOUNT
+  useEffect(() => {
+    fetchLeaderboard();
+  }, []);
 
   // Top 3 Podium Selection
   const podiumWinners = leaderboard.slice(0, 3);

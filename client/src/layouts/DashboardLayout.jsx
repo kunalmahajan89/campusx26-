@@ -30,6 +30,7 @@ export default function DashboardLayout({ children }) {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Community Feed', path: '/feed', icon: MessageSquare },
+    { name: 'Real-time Chat', path: '/chat', icon: Sparkles },
     { name: 'Quiz Arena', path: '/quiz', icon: BookOpen },
     { name: 'Leaderboard', path: '/leaderboard', icon: Trophy },
     { name: 'Profile', path: '/profile', icon: User }

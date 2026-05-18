@@ -32,10 +32,16 @@ export default function Quiz() {
     startQuiz, 
     selectAnswer, 
     nextQuestion, 
-    resetQuiz 
+    resetQuiz,
+    fetchQuizzes
   } = useQuizStore();
 
   const [timeLeft, setTimeLeft] = useState(0);
+
+  // DOWNLOAD AVAILABLE DECKS ON MOUNT
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
 
   // COUNTDOWN TIMER EFFECT
   useEffect(() => {
@@ -179,7 +185,7 @@ export default function Quiz() {
                 <div className="flex gap-3 items-start">
                   <HelpCircle className="h-6 w-6 text-primary shrink-0 mt-0.5" />
                   <h2 className="text-xl font-bold text-white leading-snug">
-                    {currentQuiz.questions[currentQuestionIndex].question}
+                    {currentQuiz.questions[currentQuestionIndex].question || currentQuiz.questions[currentQuestionIndex].text}
                   </h2>
                 </div>
 

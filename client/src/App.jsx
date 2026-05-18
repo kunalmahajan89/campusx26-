@@ -14,6 +14,7 @@ import Feed from './pages/Feed';
 import Quiz from './pages/Quiz';
 import Leaderboard from './pages/Leaderboard';
 import Profile from './pages/Profile';
+import Chat from './pages/Chat';
 
 // Auth Guard
 import { useAuthStore } from './store/authStore';
@@ -104,6 +105,17 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <Profile />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/chat" 
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Chat />
               </DashboardLayout>
             </ProtectedRoute>
           } 

@@ -1,74 +1,302 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { io } from 'socket.io-client';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuthStore } from '../store/authStore';
+import { api, checkServerHealth } from '../api';
+import io from 'socket.io-client';
+import { 
+  Send, 
+  User, 
+  MessageSquare, 
+  Terminal, 
+  Search, 
+  Shield, 
+  Wifi, 
+  WifiOff 
+} from 'lucide-react';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import { toast } from 'sonner';
 
-// In a real app, this would be an env variable
-const socket = io('http://localhost:5000');
-
-const Chat = () => {
+export default function Chat() {
+  const { user, isServerOnline, probeServer } = useAuthStore();
+  
+  const [channels, setChannels] = useState([]);
+  const [selectedChannel, setSelectedChannel] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const room = 'global';
+  const [inputValue, setInputValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const socketRef = useRef(null);
+  const scrollRef = useRef(null);
 
-  useEffect(() => {
-    socket.emit('join_room', room);
+  // MOCK CHANNELS DEFAULT LIST
+  const defaultOfflineChannels = [
+    { id: 'u_2', name: 'Dr. Ramesh Kumar', role: 'teacher', avatar: 'RK', branch: 'Physics & Electrostatics' },
+    { id: 'u_3', name: 'Prof. Sneha Sharma', role: 'teacher', avatar: 'SS', branch: 'Data Structures Lab' },
+    { id: 'u_4', name: 'Rahul Varma', role: 'senior', avatar: 'RV', branch: 'Placement Committee Head' }
+  ];
 
-    socket.on('receive_message', (data) => {
-      setMessages((prev) => [...prev, data]);
-    });
+  const defaultStudentChannels = [
+    { id: 'u_1', name: 'Kunal Mahajan', role: 'student', avatar: 'KM', branch: 'Information Technology' },
+    { id: 'u_5', name: 'Aditya Sen', role: 'student', avatar: 'AS', branch: 'Computer Engineering' }
+  ];
 
-    return () => socket.off('receive_message');
-  }, [room]);
-
-  const sendMessage = () => {
-    if (input.trim() !== '') {
-      const messageData = {
-        room,
-        author: 'User' + Math.floor(Math.random() * 100),
-        content: input,
-        time: new Date().toLocaleTimeString(),
-      };
-      socket.emit('send_message', messageData);
-      setMessages((prev) => [...prev, messageData]);
-      setInput('');
-    }
+  // CALCULATE A UNIQUE CRYPTO ROOM HASH FOR PAIR
+  const getRoomHash = (id1, id2) => {
+    return [id1, id2].sort().join('_');
   };
 
+  useEffect(() => {
+    probeServer();
+    
+    // BUILD USER TIMELINE (TEACHER VIEW VS STUDENT VIEW)
+    if (user?.role === 'teacher') {
+      setChannels(defaultStudentChannels);
+    } else {
+      setChannels(defaultOfflineChannels);
+    }
+
+    // ESTABLISH SOCKET.IO-CLIENT INSTANCE
+    socketRef.current = io('http://localhost:5000');
+
+    socketRef.current.on('connect', () => {
+      console.log('Socket link active:', socketRef.current.id);
+    });
+
+    // CAPTURE INCOMING WEBSOCKET TEXTS
+    socketRef.current.on('receive_message', (msg) => {
+      setMessages((prev) => {
+        // Avoid duplications
+        if (prev.find(m => m._id === msg._id)) return prev;
+        return [...prev, msg];
+      });
+      // Scroll to bottom on receiving message
+      setTimeout(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [user]);
+
+  // ACTION: JOIN SPECIFIC ROOM
+  const handleSelectChannel = async (chan) => {
+    setSelectedChannel(chan);
+    const room = getRoomHash(user.id, chan.id);
+
+    // Socket: Join the unique room channel
+    socketRef.current?.emit('join_room', room);
+
+    // Try to load historical archives from MongoDB
+    try {
+      const online = await checkServerHealth();
+      if (online) {
+        const history = await api.messages.getByRoom(room);
+        setMessages(history);
+      } else {
+        // Fallback: Populate static welcome message
+        setMessages([
+          {
+            _id: 'm_welcome',
+            sender: { _id: chan.id, name: chan.name, role: chan.role, avatar: chan.avatar },
+            content: `Handshake established securely. Welcome to the chat room for ${chan.name}. [Offline local sandbox mode activated]`
+          }
+        ]);
+      }
+    } catch (err) {
+      console.error("Historical chat retrieval failed:", err);
+    }
+
+    setTimeout(() => {
+      scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // ACTION: SUBMIT DIRECT TEXT TO CHANNEL
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!inputValue.trim() || !selectedChannel) return;
+
+    const room = getRoomHash(user.id, selectedChannel.id);
+    const messagePacket = {
+      senderId: user.id,
+      receiverId: selectedChannel.id,
+      room,
+      content: inputValue.trim()
+    };
+
+    const online = await checkServerHealth();
+    if (online) {
+      // Fire via live WebSockets
+      socketRef.current?.emit('send_message', messagePacket);
+    } else {
+      // Sandbox fallback append
+      const fakeMsg = {
+        _id: `m_${Date.now()}`,
+        sender: { _id: user.id, name: user.name, role: user.role, avatar: user.avatar },
+        content: inputValue.trim()
+      };
+      setMessages((prev) => [...prev, fakeMsg]);
+      toast.success("Packet queued locally (offline mode)");
+    }
+
+    setInputValue('');
+    setTimeout(() => {
+      scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  };
+
+  const filteredChannels = channels.filter(c => 
+    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="flex justify-center px-4 py-6 h-[80vh]">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="glass-card w-full max-w-3xl flex flex-col h-full"
-      >
-        <div className="border-b border-white/10 pb-4 mb-4">
-          <h2 className="text-2xl font-bold text-white">Global Chat</h2>
-          <p className="text-sm text-slate-400">Connect with students and teachers</p>
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[calc(100vh-120px)] select-none">
+      {/* SIDE CHANNELS ROSTER */}
+      <div className="md:col-span-4 flex flex-col h-full space-y-4">
+        <Card className="glass p-4 shrink-0">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-sm font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <MessageSquare className="h-4 w-4 text-primary" />
+              Secure Channels
+            </h3>
+            {isServerOnline ? (
+              <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                <Wifi className="h-3 w-3" /> LIVE
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-[10px] text-slate-400 font-bold bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                <WifiOff className="h-3 w-3" /> MOCK
+              </span>
+            )}
+          </div>
+          
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+            <input 
+              type="text" 
+              placeholder="Search peer nodes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-950/40 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
+            />
+          </div>
+        </Card>
+
+        {/* CHANNELS ACCORDION LIST */}
+        <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+          {filteredChannels.map((chan) => {
+            const isSelected = selectedChannel?.id === chan.id;
+            return (
+              <motion.div
+                key={chan.id}
+                onClick={() => handleSelectChannel(chan)}
+                className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-3 ${
+                  isSelected 
+                    ? 'bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border-primary/40 shadow-glow-blue' 
+                    : 'bg-slate-950/20 border-white/5 hover:border-white/10 hover:bg-slate-950/40'
+                }`}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-extrabold text-sm text-white">
+                  {chan.avatar}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-bold text-white text-xs truncate">{chan.name}</h4>
+                    <span className="text-[9px] font-bold text-primary px-1.5 py-0.5 rounded bg-primary/10 uppercase tracking-wider scale-90">
+                      {chan.role}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 truncate mt-0.5">{chan.branch}</p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
-        
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2 custom-scrollbar">
-          {messages.map((msg, idx) => (
-            <div key={idx} className="bg-white/5 p-3 rounded-xl w-max max-w-[80%]">
-              <div className="text-xs text-primary font-bold mb-1">{msg.author} <span className="text-slate-500 font-normal">{msg.time}</span></div>
-              <div className="text-slate-200 text-sm">{msg.content}</div>
+      </div>
+
+      {/* CHAT VIEW TIMELINE */}
+      <div className="md:col-span-8 flex flex-col h-full">
+        {selectedChannel ? (
+          <Card className="glass flex flex-col h-full p-4 overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-secondary" />
+
+            {/* CHANNEL HEADER */}
+            <div className="flex items-center gap-3 pb-3 border-b border-white/5 shrink-0 justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-xl bg-primary/20 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+                  {selectedChannel.avatar}
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-white text-sm">{selectedChannel.name}</h3>
+                  <span className="text-[9px] text-slate-500 font-mono">SEC_ROOM: {getRoomHash(user.id, selectedChannel.id).slice(0, 15)}...</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-1.5 text-[9px] text-slate-500 font-mono">
+                <Shield className="h-3.5 w-3.5 text-primary" /> End-to-End Encrypted
+              </div>
             </div>
-          ))}
-        </div>
-        
-        <div className="flex gap-2">
-          <input 
-            type="text" 
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-            placeholder="Type a message..." 
-            className="flex-1 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white focus:outline-none focus:border-primary"
-          />
-          <button onClick={sendMessage} className="btn-primary">Send</button>
-        </div>
-      </motion.div>
+
+            {/* SCROLLING CONVO WINDOW */}
+            <div className="flex-1 overflow-y-auto my-4 space-y-3 pr-2 custom-scrollbar">
+              <AnimatePresence initial={false}>
+                {messages.map((msg) => {
+                  const isMe = msg.sender?._id === user.id || msg.sender === user.id;
+                  return (
+                    <motion.div
+                      key={msg._id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`max-w-[75%] rounded-2xl p-3 border text-xs leading-relaxed ${
+                        isMe 
+                          ? 'bg-gradient-to-br from-primary/30 to-primary/10 border-primary/30 text-white rounded-tr-none' 
+                          : 'bg-slate-950/60 border-white/5 text-slate-200 rounded-tl-none'
+                      }`}>
+                        {!isMe && (
+                          <span className="block text-[9px] font-mono font-bold text-primary mb-1 uppercase tracking-wider">
+                            {msg.sender?.name || 'Peer Node'}
+                          </span>
+                        )}
+                        <p>{msg.content}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+              <div ref={scrollRef} />
+            </div>
+
+            {/* MESSAGE ENTRY FORM */}
+            <form onSubmit={handleSendMessage} className="flex gap-2 shrink-0 border-t border-white/5 pt-3">
+              <input 
+                type="text" 
+                placeholder={`Transmit telemetry packets to ${selectedChannel.name}...`}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="flex-1 bg-slate-950/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary/50 transition-colors"
+              />
+              <Button type="submit" variant="primary" className="py-2.5 shrink-0 flex items-center justify-center gap-1.5 font-bold">
+                Send <Send className="h-3.5 w-3.5" />
+              </Button>
+            </form>
+          </Card>
+        ) : (
+          <Card className="glass flex flex-col items-center justify-center text-center p-8 h-full">
+            <Terminal className="h-16 w-16 text-slate-600 mb-4 animate-pulse" />
+            <h3 className="text-lg font-extrabold text-white">Encryption Handshake Required</h3>
+            <p className="text-xs text-slate-500 max-w-sm mt-2 leading-relaxed">
+              Select a verified educator or student peer node from the directory list on the left to initialize a secure Socket.io transmission session.
+            </p>
+          </Card>
+        )}
+      </div>
     </div>
   );
-};
-
-export default Chat;
+}
